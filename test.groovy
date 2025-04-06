@@ -2,9 +2,10 @@ pipeline {
     agent any
 
     environment {
-        ALLURE_RESULTS_DIRECTORY = 'allure-results'
-        ALLURE_REPORT_DIRECTORY = 'allure-report'
-        DISPLAY = ":99"  // Указываем виртуальный дисплей Xvfb
+        ALLURE_RESULTS_API = 'allure-results-api'
+        ALLURE_RESULTS_UI = 'allure-results-ui'
+        ALLURE_RESULTS_MERGED = 'allure-results'
+        DISPLAY = ":99" // виртуальный дисплей для UI
     }
 
     stages {
@@ -15,8 +16,8 @@ pipeline {
                     steps {
                         script {
                             def mvnHome = tool name: 'maven', type: 'maven'
-                            sh "${mvnHome}/bin/mvn clean test -Dtest=ApiTest.java -Dallure.results.directory=allure-results-api"
-                            sh 'ls -la allure-results'
+                            sh "mkdir -p ${env.ALLURE_RESULTS_API}"
+                            sh "${mvnHome}/bin/mvn clean test -Dsurefire.excludes=SampleUITest.java -Dallure.results.directory=${env.ALLURE_RESULTS_API}"
                         }
                     }
                 }
@@ -27,17 +28,11 @@ pipeline {
                         script {
                             def mvnHome = tool name: 'maven', type: 'maven'
 
-                            // Запуск Xvfb
                             sh 'sudo Xvfb :99 -screen 0 1280x1024x24 &'
-
-                            // Устанавливаем зависимости для Playwright
                             sh "sudo -E ${mvnHome}/bin/mvn exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args=\"install-deps\""
 
-                            // Запуск UI тестов
-                            sh "${mvnHome}/bin/mvn clean test -Dtest=SampleUITest"
-
-                            // Проверка результатов
-                            sh 'ls -la allure-results'  // Проверка наличия отчётов
+                            sh "mkdir -p ${env.ALLURE_RESULTS_UI}"
+                            sh "${mvnHome}/bin/mvn clean test -Dtest=SampleUITest -Dallure.results.directory=${env.ALLURE_RESULTS_UI}"
                         }
                     }
                 }
@@ -47,12 +42,16 @@ pipeline {
 
     post {
         always {
-            echo "ALLURE_RESULTS_DIRECTORY=${env.ALLURE_RESULTS_DIRECTORY}"
+            echo "Собираем результаты Allure из ${env.ALLURE_RESULTS_API} и ${env.ALLURE_RESULTS_UI}"
+
+            sh "mkdir -p ${env.ALLURE_RESULTS_MERGED}"
+            sh "cp -r ${env.ALLURE_RESULTS_API}/* ${env.ALLURE_RESULTS_MERGED}/ || true"
+            sh "cp -r ${env.ALLURE_RESULTS_UI}/* ${env.ALLURE_RESULTS_MERGED}/ || true"
 
             allure([
                     includeProperties: false,
                     jdk: '',
-                    results: [[path: 'allure-results'],[path: 'allure-results-api']],
+                    results: [[path: "${env.ALLURE_RESULTS_MERGED}"]],
                     reportBuildPolicy: 'ALWAYS'
             ])
         }
