@@ -15,8 +15,7 @@ pipeline {
                     steps {
                         script {
                             def mvnHome = tool name: 'maven', type: 'maven'
-                            sh "${mvnHome}/bin/mvn clean test -Dtest=ApiTest.java"
-
+                            sh "${mvnHome}/bin/mvn clean test -Dtest=ApiTest.java -Dallure.results.directory=allure-results-api"
                             sh 'ls -la allure-results'
                         }
                     }
@@ -53,7 +52,7 @@ pipeline {
             allure([
                     includeProperties: false,
                     jdk: '',
-                    results: [[path: 'allure-results']],
+                    results: [[path: 'allure-results'],[path: 'allure-results-api']],
                     reportBuildPolicy: 'ALWAYS'
             ])
         }
