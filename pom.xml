@@ -1,0 +1,215 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.example</groupId>
+  <artifactId>tests</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>Archetype - tests</name>
+  <url>http://maven.apache.org</url>
+
+
+
+<dependencies>
+
+<!-- Playwright -->
+<dependency>
+  <groupId>com.microsoft.playwright</groupId>
+  <artifactId>playwright</artifactId>
+  <version>1.51.0</version>
+</dependency>
+
+<!-- SLF4J API -->
+<dependency>
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-api</artifactId>
+  <version>1.7.32</version>
+</dependency>
+
+<!-- Log4j классическая реализация для SLF4J -->
+<dependency>
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-log4j12</artifactId>
+  <version>1.7.32</version>
+</dependency>
+
+<!-- Log4j зависимость -->
+<dependency>
+  <groupId>log4j</groupId>
+  <artifactId>log4j</artifactId>
+  <version>1.2.17</version> <!-- Убедись, что используешь актуальную версию Log4j -->
+</dependency>
+
+
+<dependency>
+  <groupId>io.qameta.allure</groupId>
+  <artifactId>allure-java-commons</artifactId>
+  <version>2.21.0</version>
+</dependency>
+
+<dependency>
+  <groupId>io.qameta.allure</groupId>
+  <artifactId>allure-junit5</artifactId>
+  <version>2.21.0</version>
+</dependency>
+<!-- xml -->
+
+<dependency>
+  <groupId>javax.xml.bind</groupId>
+  <artifactId>jaxb-api</artifactId>
+  <version>2.3.1</version> <!-- или актуальная версия -->
+</dependency>
+
+<!-- config -->
+<dependency>
+  <groupId>com.typesafe</groupId>
+  <artifactId>config</artifactId>
+  <version>1.4.3</version>
+</dependency>
+<!-- getter setter -->
+<dependency>
+  <groupId>org.projectlombok</groupId>
+  <artifactId>lombok</artifactId>
+  <version>1.18.34</version>
+  <scope>provided</scope>
+</dependency>
+
+
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-databind</artifactId>
+  <version>2.13.4.2</version>
+  <exclusions>
+    <exclusion>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </exclusion>
+  </exclusions>
+</dependency>
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-core</artifactId>
+  <version>2.17.0</version>
+</dependency>
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-annotations</artifactId>
+  <version>2.17.0</version>
+</dependency>
+<!-- JUnit 5 -->
+<dependency>
+  <groupId>org.junit.jupiter</groupId>
+  <artifactId>junit-jupiter-api</artifactId>
+  <version>5.9.0</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.junit.jupiter</groupId>
+  <artifactId>junit-jupiter-engine</artifactId>
+  <version>5.9.0</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.junit.jupiter</groupId>
+  <artifactId>junit-jupiter</artifactId>
+  <version>5.9.2</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>junit</groupId>
+  <artifactId>junit</artifactId>
+  <version>4.13.2</version>
+  <scope>test</scope>
+</dependency>
+
+<!-- kotlin pair -->
+<dependency>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-stdlib</artifactId>
+  <version>2.1.10</version>
+</dependency>
+<!-- kafka -->
+<dependency>
+  <groupId>org.apache.kafka</groupId>
+  <artifactId>kafka-clients</artifactId>
+  <version>3.7.1</version>
+</dependency>
+
+<!-- postgresql -->
+<dependency>
+  <groupId>org.postgresql</groupId>
+  <artifactId>postgresql</artifactId>
+  <version>42.7.2</version>
+</dependency>
+
+
+</dependencies>
+
+<build>
+<plugins>
+  <!-- Плагин для запуска тестов -->
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>3.5.3</version>
+    <configuration>
+      <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+      <properties>
+        <property>
+          <name>listener</name>
+          <value>io.qameta.allure.junitplatform.AllureJunitPlatform</value>
+        </property>
+      </properties>
+    </configuration>
+  </plugin>
+
+  <plugin>
+    <groupId>io.qameta.allure</groupId>
+    <artifactId>allure-maven</artifactId>
+    <version>2.15.0</version>
+    <executions>
+      <execution>
+        <goals>
+          <goal>report</goal>
+        </goals>
+      </execution>
+    </executions>
+  </plugin>
+  <plugin>
+    <groupId>org.jetbrains.kotlin</groupId>
+    <artifactId>kotlin-maven-plugin</artifactId>
+    <version>2.1.10</version>
+    <executions>
+      <execution>
+        <id>compile</id>
+        <phase>process-sources</phase>
+        <goals>
+          <goal>compile</goal>
+        </goals>
+      </execution>
+    </executions>
+  </plugin>
+
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.10.1</version> <!-- Убедись, что используешь актуальную версию плагина -->
+    <configuration>
+      <source>17</source> <!-- Устанавливаем исходный код на 17 -->
+      <target>17</target> <!-- Устанавливаем целевую версию на 17 -->
+    </configuration>
+  </plugin>
+
+  <!-- Устанавливаем кодировку для копирования ресурсов -->
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-resources-plugin</artifactId>
+    <version>3.2.0</version>
+    <configuration>
+      <encoding>UTF-8</encoding> <!-- Указываем кодировку UTF-8 -->
+    </configuration>
+  </plugin>
+
+
+</plugins>
+</build>
+</project>
