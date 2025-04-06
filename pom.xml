@@ -6,7 +6,9 @@
   <version>1.0-SNAPSHOT</version>
   <name>Archetype - tests</name>
   <url>http://maven.apache.org</url>
-
+  <properties>
+    <allure.results.directory>allure-results</allure.results.directory>
+  </properties>
 
 
 <dependencies>
@@ -153,6 +155,9 @@
     <version>3.5.3</version>
     <configuration>
       <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+      <systemPropertyVariables>
+        <allure.results.directory>${allure.results.directory}</allure.results.directory>
+      </systemPropertyVariables>
       <properties>
         <property>
           <name>listener</name>

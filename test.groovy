@@ -6,9 +6,20 @@ pipeline {
         ALLURE_RESULTS_UI = 'allure-results-ui'
         ALLURE_RESULTS_MERGED = 'allure-results'
         DISPLAY = ":99" // виртуальный дисплей для UI
+
     }
 
     stages {
+
+        stage('Настройка'){
+            agent any
+            steps{
+                script{
+                    sh "mkdir -p allure-results-api allure-results-ui allure-results"
+                }
+            }
+        }
+
         stage('Parallel Tests') {
             parallel {
                 stage('Api Test') {
@@ -17,7 +28,7 @@ pipeline {
                         script {
                             def mvnHome = tool name: 'maven', type: 'maven'
                             sh "mkdir -p ${env.ALLURE_RESULTS_API}"
-                            sh "${mvnHome}/bin/mvn clean test -Dsurefire.excludes=SampleUITest.java -Dallure.results.directory=${env.ALLURE_RESULTS_API}"
+                            sh "${mvnHome}/bin/mvn clean test -Dtest='!SampleUITest' -Dallure.results.directory=allure-results-api"
                         }
                     }
                 }
@@ -32,7 +43,7 @@ pipeline {
                             sh "sudo -E ${mvnHome}/bin/mvn exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args=\"install-deps\""
 
                             sh "mkdir -p ${env.ALLURE_RESULTS_UI}"
-                            sh "${mvnHome}/bin/mvn clean test -Dtest=SampleUITest -Dallure.results.directory=${env.ALLURE_RESULTS_UI}"
+                            sh "${mvnHome}/bin/mvn test -Dtest=SampleUITest -Dallure.results.directory=allure-results-ui"
                         }
                     }
                 }
