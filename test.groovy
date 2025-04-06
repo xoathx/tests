@@ -16,6 +16,8 @@ pipeline {
                         script {
                             def mvnHome = tool name: 'maven', type: 'maven'
                             sh "${mvnHome}/bin/mvn clean test -Dsurefire.excludes=SampleUITest.java"
+
+                            sh 'ls -la allure-results'
                         }
                     }
                 }

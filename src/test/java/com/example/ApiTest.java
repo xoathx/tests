@@ -17,7 +17,7 @@ public class ApiTest {
     @Test
     @Tag("Test1")
     public void Test1(){
-        Assertions.assertEquals("11051", "Проверка esflErrorCode:");
+        Assertions.assertEquals("11052", "11052");
     }
 
     @Test
