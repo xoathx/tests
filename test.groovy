@@ -8,6 +8,15 @@ pipeline {
     }
 
     stages {
+        stage('Api Test'){
+            agent any
+            steps{
+                script{
+                    def mvnHome = tool name: 'maven', type: 'maven'
+                    sh "${mvnHome}/bin/mvn clean test -Dsurefire.excludes=SampleUITest.java"
+                }
+            }
+        }
         stage('Playwright UI Tests') {
             agent any
             steps {
